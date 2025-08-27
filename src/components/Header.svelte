@@ -1,40 +1,69 @@
+<!--src/components/Header.svelte-->
 <script>
     let { siteTitle } = $props()
+    var i = 0
+    function move() {
+        if (i == 0) {
+            i = 1
+            var elem = document.getElementById("myBar")
+            var width = 1
+            var id = setInterval(frame, 10)
+            function frame() {
+                if (width >= 100) {
+                clearInterval(id)
+                i = 0
+                } else {
+                    width++;
+                    elem.style.width = width + "%"
+                }
+            }
+        }
+    }
     
+    $effect(()=>{
+        move()
+    })
 </script>
 
+<div id="myProgress">
+  <div id="myBar"></div>
+</div>
 <header>
     <div class="inner region">
-        <div class="date">
-            {new Date().toLocaleDateString('km-KH', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            })}
+        <div class="logo">
+            <a href="/">
+                <img src="/images/siteLogo.png" alt='' />
+            </a>
+            <div class='title-wrapper'>
+                <a class="title" href='/' aria-label="title">
+                    <h1>{siteTitle}</h1>
+                </a>
+            </div>
         </div>
         
-        <h1 class="site-title">
-            <a href="/">{siteTitle}</a>
-        </h1>
+        <form class="search" method="get" action="/search">
+            <input type="text" name="q" placeholder="Search..." required />
+            <input type="submit" value="ស្វែង​រក" />
+        </form>
 
         <div class="login">
-            <a href="/admin">ចូល​ក្នុង</a> | 
-            <a href="/user">ចុះ​ឈ្មោះ</a>
+            <a href="/login">ចូល​ក្នុង</a> | <a href="/user">ចុះ​ឈ្មោះ</a>
         </div>
     </div>
 </header>
 
 <style>
+    #myProgress {
+        width: 100%;
+        background-color: transparent;
+    }
+    #myBar {
+        width: 1%;
+        height: 5px;
+        background-color: var(--color);
+    }
     header{
         border-bottom: 5px solid var(--color);
-        max-width: 900px;
-        margin: 30px auto 0;
-        padding: 0 30px;
-        background-color: teal;
-        color: white;
-        font: 16px/1.5 Vidaloka, OdorMeanChey;
-        border-radius: 5px 5px 0 0;
     }
     header .inner{
         display: grid;
@@ -42,22 +71,42 @@
         align-items: center;
         padding: 20px 0;
     }
-    header a{
-        text-decoration: none;
-        color: white;
+    header .inner .logo{
+        display: grid;
+        grid-template-columns: 50px auto;
+        grid-gap: 10px;
+        align-items: center;
     }
-    header .inner .site-title a{
-        font: 40px 'Limonf3';
+    header .inner .logo img{
+        width: 100%;
+    }
+    header .inner .title{
+        text-align: left;
+        color: rgb(88, 88, 88);
+        font-family: Moul;
+        font-size: 20px;
+    }
+    header .inner .search{
+        text-align: center;
+        display: grid;
+        grid-template-columns: auto 80px;
+    }
+    header .inner .search input{
+        font-family: Vidaloka, OdorMeanChey;
+        padding: 1px 5px;
     }
     header .inner .login{
         text-align: right;
+    }
+    header .inner .login a{
+        color: var(--color);
     }
 
     @media only screen and (max-width: 600px){
         header .inner{
             grid-template-columns: 100%;
-            padding: 20px 10px;
-            text-align: center;
+            padding: 30px 10px;
+            grid-gap: 20px;
         }
        header .inner .login{
             text-align: center;

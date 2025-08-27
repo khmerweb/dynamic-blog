@@ -1,7 +1,6 @@
 <!--src/components/Base.astro-->
 ---
 const { pageTitle="ទំព័រ​គ្រឹះ" } = Astro.props
-import Header from "./Header.svelte"
 ---
  
 <html lang="en">
@@ -14,7 +13,6 @@ import Header from "./Header.svelte"
         <link href="/fonts/setup.css" rel="stylesheet" />
     </head>
     <body>
-        <Header siteTitle="កំណត់ហេតុយើង​" client:load />
         <slot />
     </body>
 </html>
