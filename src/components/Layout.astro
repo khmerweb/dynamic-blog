@@ -2,11 +2,13 @@
 ---
 import Base from "./Base.astro"
 import Header from "./Header.svelte"
-const { title } = Astro.props
+import Menu from "./Menu.svelte"
+const { title, pageURL } = Astro.props
 ---
 
 <Base pageTitle={title}>
     <Header siteTitle={title} client:load />
+    <Menu pageURL={pageURL} client:load />
     <slot />
 </Base>
 
