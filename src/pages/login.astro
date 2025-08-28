@@ -1,0 +1,65 @@
+<!--src/pages/login.astro-->
+---
+import Base from "../components/Base.astro"
+if(Astro.request.method === "POST"){
+    const data = await Astro.request.formData()
+    const email = data.get("email")
+    const password = data.get("password")
+    console.log({ email, password })
+}
+---
+
+<Base pageTitle="Login">
+    <div class="wrapper">
+        <h2>ចុះ​ឈ្មោះ​ចូល​ទំព័រ​គ្រប់គ្រង</h2>
+        <form action="/login" method="POST">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required />
+            <br />
+            <label for="password">ពាក្យ​សំងាត់ៈ</label>
+            <input type="password" id="password" name="password" required />
+            <br />
+            <button type="submit">បញ្ជូន</button>
+        </form>
+    </div>
+</Base>
+
+<style>
+    .wrapper {
+        max-width: 300px;
+        margin: 100px auto;
+        background-color: lightgrey;
+    }
+
+    .wrapper h2 {
+        padding: 10px 0;
+        font: normal 20px/1.5 Koulen;
+        text-align: center;
+        background-color: #333;
+        color: white;
+    }
+
+    .wrapper form {
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px 20px;
+        font: 14px/1.5 Vidaloka, OdorMeanChey;
+    }
+    
+    .wrapper form input {
+        padding: 8px;
+    }
+    
+    .wrapper form button {
+        font: 14px/1.5 OdorMeanChey;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .wrapper form button:hover {
+        background-color: #45a049;
+    }
+</style>

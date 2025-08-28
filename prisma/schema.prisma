@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// npx prisma db push
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id      String  @id
+  email   String  @unique
+  title   String
+  password String
+  role    String
+  thumb   String
+  content String
+  date    String
+}
+
+model Post {
+  id String  @id
+  title String
+  content String
+  categories String
+  thumb String
+  date String
+  videos String
+  author String
+  expiration DateTime?
+}
+
+model Category {
+  id String  @id
+  title String
+  thumb String
+  date String
+}
+
+model Page {
+  id String  @id
+  title String
+  content String
+  thumb String
+  date String
+}
+
+model Setting {
+  id String  @id
+  title String
+  description String
+  dashboard Int
+  frontend Int
+  categories Int
+  playlist Int
+  thumb String
+  date String
+}

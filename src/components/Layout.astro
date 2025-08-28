@@ -3,6 +3,7 @@
 import Base from "./Base.astro"
 import Header from "./Header.svelte"
 import Menu from "./Menu.svelte"
+import Footer from "./Footer.svelte"
 const { title, pageURL } = Astro.props
 ---
 
@@ -10,6 +11,7 @@ const { title, pageURL } = Astro.props
     <Header siteTitle={title} client:load />
     <Menu pageURL={pageURL} client:load />
     <slot />
+    <Footer />
 </Base>
 
 <style is:global>
