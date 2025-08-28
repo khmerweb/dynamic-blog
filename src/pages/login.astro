@@ -1,10 +1,12 @@
 <!--src/pages/login.astro-->
 ---
+// npm install node-fetch
+import fetch from 'node-fetch'
+global.fetch = fetch
 import Base from "../components/Base.astro"
 import bcrypt from "bcryptjs"
 import user from "../models/user.js"
 const session = await Astro.session?.get('user')
-console.log(session)
 if(session){ return Astro.redirect("/admin")}
 
 let message = ''
