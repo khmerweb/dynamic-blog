@@ -27,7 +27,7 @@ class User{
     async checkUser(Email){
         return await prisma.user.findUnique({ where: { email: Email }})
     }
-
+/*
     async getUsers(req, amount){
         return await req.prisma.user.findMany({ 
             take: amount, 
@@ -90,6 +90,7 @@ class User{
 
         return users
     }
+*/
 }
 
 export default new User()

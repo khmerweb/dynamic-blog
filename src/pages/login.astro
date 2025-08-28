@@ -1,11 +1,36 @@
 <!--src/pages/login.astro-->
 ---
 import Base from "../components/Base.astro"
+import bcrypt from "bcryptjs"
+import user from "../models/user.js"
+
+let message = ''
 if(Astro.request.method === "POST"){
     const data = await Astro.request.formData()
     const email = data.get("email")
     const password = data.get("password")
-    console.log({ email, password })
+
+    let loginUser = null
+    const validate = (
+        typeof email === 'string' && email !== '' &&
+        typeof password === 'string' && password !== ''
+    )
+    if(validate){
+        loginUser = await user.checkUser(email)
+    }else{
+        message = "ទិន្នន័យ​បញ្ជូន​មក​មិន​ត្រឹមត្រូវ​ទេ!"
+    }
+    
+    if(loginUser){
+        if(bcrypt.compareSync(password, loginUser.password)){
+            await Astro.session?.set('user', loginUser)
+            return Astro.redirect("/admin")
+        }else{
+            message = 'ពាក្យ​សំងាត់​មិន​ត្រឹមត្រូវ​ទេ'         
+        }
+    }else{
+        message = 'Email មិន​ត្រឹមត្រូវទេ'
+    }
 }
 ---
 
@@ -20,6 +45,7 @@ if(Astro.request.method === "POST"){
             <input type="password" id="password" name="password" required />
             <br />
             <button type="submit">បញ្ជូន</button>
+            <p style="color: red;text-align:center">{message}</p>
         </form>
     </div>
 </Base>
