@@ -1,0 +1,61 @@
+<!--src/components/admin/Layout.astro-->
+---
+import Base from "../Base.astro"
+import Header from "./Header.svelte"
+import Footer from "../Footer.svelte"
+import Admin from "../../components/admin/Admin.astro"
+const { title, user } = Astro.props
+---
+
+<Base pageTitle={title}>
+    <Header siteTitle={title} {user} client:load />
+    <Admin>
+        <slot name="editor" slot="editor" />
+        <slot name="item" slot="item" />
+    </Admin>
+    <Footer />
+</Base>
+
+<style is:global>
+    :root{
+        --background-dark: grey;
+        --background: lightgrey;
+        --background-light: rgb(233, 232, 232);
+        --body: white;
+        --panel: lightgrey;
+        --body-font: 14px/1.5 Vidaloka, OdorMeanChey;
+        --link: rgb(71, 71, 71);
+        --menu: rgb(177, 177, 177);
+        --playlist-part:rgb(175, 175, 175);
+        --playlist-color: black;
+        --playlist-clicked: white;
+        --playlist-clicked-bg: #149165;
+        --color: rgb(71, 71, 71);
+    }
+  
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    a{
+        text-decoration: none;
+        color: var(--link);
+    }
+
+    a:hover{
+        opacity: .7;
+    }
+
+    .region{
+        max-width: 1150px;
+        margin: 0 auto;
+    }
+  
+    html{
+        color: var(--color);
+        font: var(--body-font);
+        background: var(--background-light);
+    }
+</style>

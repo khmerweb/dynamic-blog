@@ -1,0 +1,9 @@
+<!--src/pages/admin/index.astro-->
+---
+const user = await Astro.session?.get('user')
+if(!user){return Astro.redirect('/login')}
+
+import Layout from "../../components/admin/Layout.astro"
+---
+ 
+<Layout title="ទំព័រ​គ្រប់គ្រង" user={user} />

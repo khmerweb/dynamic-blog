@@ -1,0 +1,5 @@
+<!--src/pages/admin/logout.astro-->
+---
+Astro.session?.destroy()
+return Astro.redirect('/login')
+---

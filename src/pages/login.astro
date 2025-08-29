@@ -21,7 +21,7 @@ if(Astro.request.method === "POST"){
         loginUser = await user.checkUser(email)
         if(loginUser){
             if(bcrypt.compareSync(password, loginUser.password)){
-                await Astro.session?.set('user', loginUser)
+                Astro.session?.set('user', loginUser, { ttl: 3600*24 })
                 return Astro.redirect("/admin")
             }else{
                 message = 'ពាក្យ​សំងាត់​មិន​ត្រឹមត្រូវ​ទេ'         
