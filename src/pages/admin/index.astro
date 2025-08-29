@@ -3,7 +3,5 @@
 const user = await Astro.session?.get('user')
 if(!user){return Astro.redirect('/login')}
 
-import Layout from "../../components/admin/Layout.astro"
+return Astro.redirect('/admin/post')
 ---
- 
-<Layout title="ទំព័រ​គ្រប់គ្រង" user={user} />
