@@ -1,17 +1,19 @@
 <!--src/components/admin/Layout.astro-->
 ---
+// @ts-nocheck
 import Base from "../Base.astro"
 import Header from "./Header.svelte"
 import Footer from "../Footer.svelte"
 import Admin from "../../components/admin/Admin.astro"
-const { title, user } = Astro.props
+import Item from "../../components/admin/Item.svelte"
+const { title, data, user } = Astro.props
 ---
 
 <Base pageTitle={title}>
     <Header siteTitle={title} {user} client:load />
     <Admin>
         <slot name="editor" slot="editor" />
-        <slot name="item" slot="item" />
+        <Item slot="item" {data} />
     </Admin>
     <Footer />
 </Base>

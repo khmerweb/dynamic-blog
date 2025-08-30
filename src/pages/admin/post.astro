@@ -1,14 +1,14 @@
 <!--src/pages/admin/post.astro-->
 ---
+// @ts-nocheck
 const user = await Astro.session?.get('user')
 if(!user){return Astro.redirect('/login')}
 
 import Layout from "../../components/admin/Layout.astro"
-import Post_ from "../../components/admin/Post.svelte"
-import Item from "../../components/admin/Item.svelte"
+import Post from "../../components/admin/Post.svelte"
+const data = {}
 ---
  
-<Layout title="ទំព័រ​គ្រប់គ្រង" user={user} >
-    <Post_ slot="editor" />
-    <Item slot="item" />
+<Layout title="ទំព័រ​ការផ្សាយ" data={data} user={user} >
+    <Post slot="editor" {data} client:load />
 </Layout>
