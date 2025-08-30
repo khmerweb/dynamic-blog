@@ -12,6 +12,9 @@
 </script>
 
 <footer>
+	{#if data?.form}
+	<div class="{data.form.success ? 'success':'error'}">{ data.form.info }</div>
+	{/if}
     <div class="info">{data?.info}​ទាំងអស់​មានចំនួនៈ {data?.count}</div>
     <div class="items">
         {#each items as item}
@@ -56,6 +59,16 @@
 <style>
     footer{
 		margin-top: 0;
+	}
+	footer .success, footer .error{
+		background-color: green;
+		text-align: center;
+		margin-top: 10px;
+		padding: 5px;
+		color: white;
+	}
+	footer .error{
+		background-color: red;
 	}
 	footer .info{
 		background-color: var(--background);

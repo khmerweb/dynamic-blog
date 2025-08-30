@@ -10,7 +10,7 @@ const { title, data, user } = Astro.props
 ---
 
 <Base pageTitle={title}>
-    <Header siteTitle={title} {user} client:load />
+    <Header siteTitle={title} {data} client:load />
     <Admin>
         <slot name="editor" slot="editor" />
         <Item slot="item" {data} />

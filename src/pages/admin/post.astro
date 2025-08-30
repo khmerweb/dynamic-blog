@@ -6,9 +6,49 @@ if(!user){return Astro.redirect('/login')}
 
 import Layout from "../../components/admin/Layout.astro"
 import Post from "../../components/admin/Post.svelte"
-const data = {}
+import postDb from "../../models/post.js"
+import setup from "../../settings.js"
+const settings = await setup()
+const items = await postDb.getPosts(settings.dashboard)
+const count = await postDb.count()
+const pageNumber = Math.ceil(count/settings.dashboard)
+const categories = [] //await categoryDB.getAllItems(locals)
+
+const data = { user, count, settings, items, categories, info:"ការផ្សាយ", type:"post", pageNumber }
+
+if(Astro.request.method === "POST"){
+    let message = {}
+    const formData = await Astro.request.formData()
+    const title = formData.get('title')
+        const content = formData.get('content')
+        const categories = formData.get('categories')
+        const thumb = formData.get("thumb")
+        const datetime = formData.get("datetime")
+        const videos = formData.get("videos")
+
+        const validate = (
+            typeof title === 'string' && title !== '' &&
+            typeof content === 'string' &&
+            typeof categories === 'string' && categories !== '' &&
+            typeof thumb === 'string' && thumb !== '' &&
+            typeof datetime === 'string' && datetime !== '' &&
+            typeof videos === 'string'
+        )
+
+        if(validate){
+            const post = {title, content, categories, thumb, datetime, videos}
+            await postDb.createPost(post, user)
+            message.info = 'ការផ្សាយ​មួយ​ត្រូវ​បាន​បង្កើត​ឡើង!'
+            message.success = true
+        }else{
+            message.info = "ទិន្នន័យ​បញ្ជូន​មក​មិន​ត្រឹមត្រូវ​ទេ!"
+            message.success = false
+        }
+
+    data.form = message
+}
 ---
  
-<Layout title="ទំព័រ​ការផ្សាយ" data={data} user={user} >
+<Layout title="ទំព័រ​ការផ្សាយ" data={data} >
     <Post slot="editor" {data} client:load />
 </Layout>

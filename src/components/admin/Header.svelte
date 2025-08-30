@@ -1,6 +1,6 @@
 <!--src/components/admin/Header.svelte-->
 <script>
-    let { siteTitle, user } = $props()
+    let { data, siteTitle } = $props()
     var i = 0
     function move() {
         if (i == 0) {
@@ -47,7 +47,7 @@
         </form>
 
         <div class="login">
-            <a href="/user/{user.id}">{user.title}</a> | <a href="/">ទំព័រមុខ</a> | <a href="/admin/logout">ចេញ​ក្រៅ</a>
+            <a href="/user/{data.user.id}">{data.user.title}</a> | <a href="/">ទំព័រមុខ</a> | <a href="/admin/logout">ចេញ​ក្រៅ</a>
         </div>
     </div>
 </header>

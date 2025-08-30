@@ -21,6 +21,7 @@
     }
 
     function submitForm(){
+        window.onbeforeunload = null
         if(videos.length){
             let newVideos = []
             let part = {}
@@ -63,10 +64,9 @@
     function deleteRow(e) {
         let index = parseInt(e.target.innerHTML)
         videos.splice(videos.length - index, 1)
-        videos = [...videos]
     }
 
-    function save_data_check(){        
+    function save_data_check(){   
         return "Your changes may not be saved."
     }
 
@@ -83,7 +83,7 @@
 
 <div class="Editor">
     <script src="/scripts/ckeditor/ckeditor.js"></script>
-    <form action="/admin/post?/create" method="post" onsubmit={submitForm}>
+    <form action="/admin/post" method="post" onsubmit={submitForm}>
         <input type="text" name="title" required placeholder="ចំណងជើង" />
         <div class="wrapper">
             <textarea name="content" id="editor"></textarea>
