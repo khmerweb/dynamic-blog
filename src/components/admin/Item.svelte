@@ -1,8 +1,10 @@
 <!--src/components/admin/Item.svelte-->
 <script>
-    let {data} = $props()
+	import { activePage } from "../../stores/page.js"
+    let { data } = $props()
 	let items = $state(data?.items)
 	let value = $state(undefined)
+	$effect(() => { $activePage = value })
 	let navPage = data?.navPage || 1
 	
 	async function paginate(e){

@@ -53,6 +53,10 @@ class Post{
     async deletePost(params){
         await prisma.post.delete({ where: {id: params.id } })
     }
+
+    async updatePost(newPost, params){
+        await prisma.post.update({ where: {id: params.id }, data: newPost })
+    }
 }
 
 export default new Post()

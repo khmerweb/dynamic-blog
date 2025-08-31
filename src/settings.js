@@ -21,7 +21,7 @@ async function setup(req){
         settings = {
             siteTitle: 'ដំណឹង​ល្អ',
             description: 'description',
-            dashboard: 10,
+            dashboard: 2,
             frontend: 20,
             categories: 20,
             playlist: 20,

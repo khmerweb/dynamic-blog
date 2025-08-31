@@ -1,0 +1,72 @@
+<!--src/admin/post/edit/[id].astro-->
+---
+// @ts-nocheck
+const user = await Astro.session?.get('user')
+if(!user){return Astro.redirect('/login')}
+
+import Layout from "../../../../components/admin/Layout.astro"
+import Post from "../../../../components/admin/Post-edit.svelte"
+import postDb from "../../../../models/post.js"
+import setup from "../../../../settings.js"
+const settings = await setup()
+const items = await postDb.getPosts(settings.dashboard)
+const count = await postDb.count()
+const post = await postDb.getPost(Astro.params)
+const pageNumber = Math.ceil(count/settings.dashboard)
+const categories = [] //await categoryDB.getAllItems(locals)
+const params = Astro.url.searchParams
+const navPage = params.get("p")
+
+const data = { user, post, count, settings, items, categories, info:"ការផ្សាយ", type:"post", pageNumber, navPage }
+
+if(Astro.request.method === "POST"){
+    let message = {}
+    const formData = await Astro.request.formData()
+    const title = formData.get('title')
+    const content = formData.get('content')
+    const categories = formData.get('categories')
+    const thumb = formData.get("thumb")
+    const date = formData.get("datetime")
+    const videos = formData.get("videos")
+
+    const validate = (
+        typeof title === 'string' && title !== '' &&
+        typeof content === 'string' &&
+        typeof categories === 'string' && categories !== '' &&
+        typeof thumb === 'string' && thumb !== '' &&
+        typeof date === 'string' && date !== '' &&
+        typeof videos === 'string'
+    )
+
+    if(validate){
+        const newPost = { title, content, categories, thumb, date, videos }
+        if(user.role !== 'Admin'){
+            if(post.author === user.id){
+                await postDb.updatePost(newPost, Astro.params)
+                message.info = 'កែប្រែ​បាន​ដោយ​ជោគជ័យ!'
+                message.success = true
+            }else{
+                message.info = 'អ្នក​មិន​អាច​កែប្រែ​ការផ្សាយ​របស់​អ្នក​ផ្សេង​បាន​ឡើយ!'
+                message.success = false
+            }
+        }else if(user.role === 'Admin'){
+            await postDb.updatePost(newPost, Astro.params)
+            message.info = 'កែប្រែ​បាន​ដោយ​ជោគជ័យ!'
+            message.success = true
+        }
+    }else{
+        message.info = "ទិន្នន័យ​បញ្ជូន​មក​មិន​ត្រឹមត្រូវ​ទេ!"
+        message.success = false
+    }
+
+    data.post = await postDb.getPost(Astro.params)
+    data.items = await postDb.getPosts(settings.dashboard)
+    data.count = await postDb.count()
+    data.pageNumber = Math.ceil(count/settings.dashboard)
+    data.form = message
+}
+---
+
+<Layout title="កែប្រែ​ការផ្សាយ" data={data} >
+    <Post slot="editor" {data} client:load />
+</Layout>
