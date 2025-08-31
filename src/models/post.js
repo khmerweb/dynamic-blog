@@ -2,6 +2,10 @@
 import prisma from './prisma.js'
 
 class Post{
+    async count(query={}){
+        return await prisma.post.count(query)
+    }
+
     async createPost(post, user){
         let new_post = {}
         const expireTime = 1000 * 60 * 60 * 24 * 30 * 3
@@ -35,10 +39,6 @@ class Post{
         await prisma.post.create({ data: new_post })
     }
 
-    async count(query={}){
-        return await prisma.post.count(query)
-    }
-
     async getPosts(amount){
         return await prisma.post.findMany({ 
             take: amount, 
@@ -56,6 +56,16 @@ class Post{
 
     async updatePost(newPost, params){
         await prisma.post.update({ where: {id: params.id }, data: newPost })
+    }
+
+    async paginatePosts(page, amount){
+        const posts = await prisma.post.findMany({ 
+            orderBy: { date: "desc" },
+            skip: amount * (page-1),
+            take: amount,
+        })
+
+        return posts
     }
 }
 
