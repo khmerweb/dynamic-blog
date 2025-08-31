@@ -13,10 +13,10 @@ class User{
         await prisma.user.create({
             data: {
                 id: crypto.randomUUID(),
-                email: "sokhavuth@khmerweb.app",
-                title: "Sokhavuth",
+                email: "author@khmerweb.app",
+                title: "Author",
                 password: hashPassword,
-                role: "Admin",
+                role: "Author",
                 thumb: "",
                 content: "",
                 date: "",
@@ -27,6 +27,11 @@ class User{
     async checkUser(Email){
         return await prisma.user.findUnique({ where: { email: Email }})
     }
+
+    async getUser(params){
+        return await prisma.user.findUnique({ where: {id: params.id }})
+    }
+
 /*
     async getUsers(req, amount){
         return await req.prisma.user.findMany({ 
@@ -50,10 +55,6 @@ class User{
         }
 
         await req.prisma.user.create({ data: user })
-    }
-
-    async getUser(req){
-        return await req.prisma.user.findUnique({ where: {id: req.params.id }})
     }
 
     async updateUser(req){

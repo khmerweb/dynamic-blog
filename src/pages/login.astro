@@ -4,6 +4,7 @@
 import Base from "../components/Base.astro"
 import bcrypt from "bcryptjs"
 import user from "../models/user.js"
+// user.createRootUser()
 const session = await Astro.session?.get('user')
 if(session){ return Astro.redirect("/admin")}
 

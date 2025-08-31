@@ -45,6 +45,14 @@ class Post{
             orderBy: { date: "desc" }
         })
     }
+
+    async getPost(params){
+        return await prisma.post.findUnique({ where: {id: params.id }})
+    }
+
+    async deletePost(params){
+        await prisma.post.delete({ where: {id: params.id } })
+    }
 }
 
 export default new Post()
