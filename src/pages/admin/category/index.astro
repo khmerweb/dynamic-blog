@@ -1,0 +1,55 @@
+<!--src/pages/admin/category/index.astro-->
+---
+// @ts-nocheck
+const user = await Astro.session?.get('user')
+if(!user){return Astro.redirect('/login')}
+
+import Layout from "../../../components/admin/Layout.astro"
+import Category from "../../../components/admin/Category.svelte"
+import categoryDb from "../../../models/category.js"
+import setup from "../../../settings.js"
+const settings = await setup()
+const items = await categoryDb.getCategories(settings.dashboard)
+const count = await categoryDb.count()
+const pageNumber = Math.ceil(count/settings.dashboard)
+
+const data = {user, count, items, info:"ជំពូក", type:"category", pageNumber}
+
+if(Astro.request.method === "POST"){
+    let message = {}
+    const formData = await Astro.request.formData()
+    const title = formData.get('label')
+    const thumb = formData.get("thumb")
+    const date = formData.get("datetime")
+
+    const validate = (
+        typeof title === 'string' && title !== '' &&
+        typeof thumb === 'string' && thumb !== '' &&
+        typeof date === 'string' && date !== ''
+    )
+
+    if(validate){
+        const category = {title, thumb, date}
+        if(user.role == 'Admin'){
+            await categoryDb.createCategory(category)
+            message.info = 'ជំពូក​​មួយ​ត្រូវ​បាន​បង្កើត​ឡើង!'
+            message.success = true
+        }else{
+            message.info = 'អ្នក​គ្មាន​សិទ្ធិ​បង្កើត​ជំពូក​ឡើយ!'
+            message.success = false
+        }
+    }else{
+        message.info = "ទិន្នន័យ​បញ្ជូន​មក​មិន​ត្រឹមត្រូវ​ទេ!"
+        message.success = false
+    }
+
+    data.items = await categoryDb.getCategories(settings.dashboard)
+    data.count = await categoryDb.count()
+    data.pageNumber = Math.ceil(data.count/settings.dashboard)
+    data.form = message
+}
+---
+
+<Layout title="ទំព័រ​ជំពូក" data={data} >
+    <Category slot="editor" {data} client:load />
+</Layout>

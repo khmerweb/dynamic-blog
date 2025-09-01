@@ -7,12 +7,13 @@ if(!user){return Astro.redirect('/login')}
 import Layout from "../../../components/admin/Layout.astro"
 import Post from "../../../components/admin/Post.svelte"
 import postDb from "../../../models/post.js"
+import categoryDb from "../../../models/category.js"
 import setup from "../../../settings.js"
 const settings = await setup()
 const items = await postDb.getPosts(settings.dashboard)
 const count = await postDb.count()
 const pageNumber = Math.ceil(count/settings.dashboard)
-const categories = [] //await categoryDB.getAllItems(locals)
+const categories = await categoryDb.getAllItems()
 
 const data = { user, count, settings, items, categories, info:"ការផ្សាយ", type:"post", pageNumber }
 const form = Astro.cookies.get('form')
@@ -52,7 +53,7 @@ if(Astro.request.method === "POST"){
 
     data.items = await postDb.getPosts(settings.dashboard)
     data.count = await postDb.count()
-    data.pageNumber = Math.ceil(count/settings.dashboard)
+    data.pageNumber = Math.ceil(data.count/settings.dashboard)
     data.form = message
 }
 ---
