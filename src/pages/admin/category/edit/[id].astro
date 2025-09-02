@@ -1,13 +1,13 @@
-<!--src/pages/admin/category/index.astro-->
+<!--src/pages/admin/category/edit/[id].js-->
 ---
 // @ts-nocheck
 const user = await Astro.session?.get('user')
 if(!user){return Astro.redirect('/login')}
 
-import Layout from "../../../components/admin/Layout.astro"
-import Category from "../../../components/admin/Category.svelte"
-import categoryDb from "../../../models/category.js"
-import setup from "../../../settings.js"
+import Layout from "../../../../components/admin/Layout.astro"
+import Category from "../../../../components/admin/Category-edit.svelte"
+import categoryDb from "../../../../models/category.js"
+import setup from "../../../../settings.js"
 
 let form = null
 
@@ -27,11 +27,11 @@ if(Astro.request.method === "POST"){
     if(validate){
         const category = {title, thumb, date}
         if(user.role == 'Admin'){
-            await categoryDb.createCategory(category)
-            form.info = 'ជំពូក​​មួយ​ត្រូវ​បាន​បង្កើត​ឡើង!'
+            await categoryDb.updateCategory(category, Astro.params)
+            form.info = 'ជំពូក​​​ត្រូវ​បាន​កែប្រែ!'
             form.success = true
         }else{
-            form.info = 'អ្នក​គ្មាន​សិទ្ធិ​បង្កើត​ជំពូក​ឡើយ!'
+            form.info = 'អ្នក​គ្មាន​សិទ្ធិ​កែប្រែ​ជំពូក​ឡើយ!'
             form.success = false
         }
     }else{
@@ -41,18 +41,16 @@ if(Astro.request.method === "POST"){
 }
 
 const settings = await setup()
-const items = await categoryDb.getCategories(settings.dashboard)
+const params = Astro.url.searchParams
+const navPage = params.get("p")
+const category = await categoryDb.getCategory(Astro.params)
+const items = await categoryDb.paginate(parseInt(navPage), settings.dashboard)
 const count = await categoryDb.count()
 const pageNumber = Math.ceil(count/settings.dashboard)
 
-const data = {user, count, items, info:"ជំពូក", type:"category", pageNumber, form}
-const formCookie = Astro.cookies.get('form')
-if(formCookie){
-    data.form = JSON.parse(formCookie.value)
-    Astro.cookies.delete("form", { path: '/' })
-}
+const data = {user, count, category, items, info:"ជំពូក", type:"category", pageNumber, form, navPage}
 ---
 
-<Layout title="ទំព័រ​ជំពូក" data={data} >
+<Layout title="កែប្រែជំពូក" data={data} >
     <Category slot="editor" {data} client:load />
 </Layout>

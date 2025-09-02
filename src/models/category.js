@@ -1,5 +1,4 @@
 // models/category.js
-
 import prisma from './prisma.js'
 
 class Category{
@@ -21,42 +20,43 @@ class Category{
     async getCategories(amount){
         const categories = await prisma.category.findMany({ 
             take: amount, 
-            orderBy: [{ date: "desc" }, { id: "desc" }]
+            orderBy: { date: "desc" }
         })
 
         return categories
+    }
+
+    async deleteCategory(params){
+        await prisma.category.delete({ where: {id: params.id } })
     }
 
     async getAllItems(){
         const categories = await prisma.category.findMany({  
-            orderBy: [{ date: "desc" }, { id: "desc" }]
+            orderBy: { date: "desc" }
         })
 
         return categories
     }
 
-    async getCategory(req){
-        return await req.prisma.category.findUnique({ where: {id: req.params.id }})
+    async getCategory(params){
+        return await prisma.category.findUnique({ where: {id: params.id }})
     }
 
-    async updateCategory(req){
+    async updateCategory(category, params){
         const updatedCategory = {
-            title: req.body.label,
-            thumb: req.body.thumb,
-            date: req.body.datetime,
+            title: category.title,
+            thumb: category.thumb,
+            date: category.date,
         }
         
-        await req.prisma.category.update({ where: {id: req.params.id }, data: updatedCategory })
+        await prisma.category.update({ where: {id: params.id }, data: updatedCategory })
+        
     }
 
-    async deleteCategory(req){
-        await req.prisma.category.delete({ where: {id: req.params.id } })
-    }
-
-    async paginate(req, amount){
-        const categories = await req.prisma.category.findMany({ 
-            orderBy: [{ date: "desc" }, { id: "desc" }],
-            skip: amount*(parseInt(req.body.page-1)),
+    async paginate(page, amount){
+        const categories = await prisma.category.findMany({ 
+            orderBy: { date: "desc" },
+            skip: amount*(page-1),
             take: amount
         })
 
