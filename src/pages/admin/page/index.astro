@@ -1,0 +1,60 @@
+<!--src/pages/admin/page/index.astro-->
+---
+// @ts-nocheck
+const user = await Astro.session?.get('user')
+if(!user){return Astro.redirect('/login')}
+
+import Layout from "../../../components/admin/Layout.astro"
+import Page from "../../../components/admin/Page.svelte"
+import pageDb from "../../../models/page.js"
+import setup from "../../../settings.js"
+
+let form = null
+
+if(Astro.request.method === "POST"){
+    form = {}
+    const formData = await Astro.request.formData()
+    const title = formData.get('title')
+    const content = formData.get('content')
+    const thumb = formData.get("thumb")
+    const date = formData.get("datetime")
+
+    const validate = (
+        typeof title === 'string' && title !== '' &&
+        typeof content === 'string' && content !== '' &&
+        typeof thumb === 'string' && thumb !== '' &&
+        typeof date === 'string' && date !== ''
+    )
+
+    if(validate){
+        if(user.role === 'Admin'){
+            const page = {title, content, thumb, date}
+            await pageDb.createPage(page)
+            form.info = 'ទំព័រ​ស្តាទិក​​មួយ​ត្រូវ​បាន​បង្កើត​ឡើង!'
+            form.success = true
+        }else{
+            form.info = 'អ្នក​គ្មាន​សិទ្ធិ​បង្កើត​ទំព័រ​ស្តាទិក​​ឡើយ!'
+            form.success = false
+        }
+    }else{
+        form.info = "ទិន្នន័យ​បញ្ជូន​មក​មិន​ត្រឹមត្រូវ​ទេ!"
+        form.success = false
+    }
+}
+
+const settings = await setup()
+const items = [] // await postDb.getPosts(settings.dashboard)
+const count = 0 // await postDb.count()
+const pageNumber = 1 //Math.ceil(count/settings.dashboard)
+
+const data = { user, count, items, info:"ទំព័រ​ស្តាទិក", type:"page", pageNumber, form }
+const formCookie = Astro.cookies.get('form')
+if(formCookie){
+    data.form = JSON.parse(formCookie.value)
+    Astro.cookies.delete("form", { path: '/' })
+}
+---
+ 
+<Layout title="ទំព័រ​ស្តាទិក" data={data} >
+    <Page slot="editor" {data} client:load />
+</Layout>
