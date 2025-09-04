@@ -6,8 +6,8 @@ class Page{
         return await prisma.page.count()
     }
 
-    async getPages(req, amount){
-        return await req.prisma.page.findMany({ 
+    async getPages(amount){
+        return await prisma.page.findMany({ 
             take: amount, 
             orderBy: [{ date: "desc" }, { id: "desc" }]
         })
@@ -25,29 +25,29 @@ class Page{
         await prisma.page.create({ data: new_page })
     }
 
-    async getPage(req){
-        return await req.prisma.page.findUnique({ where: {id: req.params.id }})
+    async getPage(params){
+        return await prisma.page.findUnique({ where: {id: params.id }})
     }
 
-    async updatePage(req){
+    async updatePage(page, params){
         let newvalue = {
-            title: req.body.title,
-            content: req.body.content,
-            thumb: req.body.thumb,
-            date: req.body.datetime,
+            title: page.title,
+            content: page.content,
+            thumb: page.thumb,
+            date: page.date,
         }
      
-        await req.prisma.page.update({ where: {id: req.params.id }, data: newvalue })
+        await prisma.page.update({ where: {id: params.id }, data: newvalue })
     }
 
-    async deletePage(req){
-        await req.prisma.page.delete({ where: {id: req.params.id } })
+    async deletePage(params){
+        await prisma.page.delete({ where: {id: params.id } })
     }
 
-    async paginatePages(req, amount){
-        const pages = await req.prisma.page.findMany({ 
-            orderBy: [{ date: "desc" }, { id: "desc" }],
-            skip: amount * (parseInt(req.body.page)-1),
+    async paginatePages(page, amount){
+        const pages = await prisma.page.findMany({ 
+            orderBy: { date: "desc" },
+            skip: amount * (page-1),
             take: amount
         })
 

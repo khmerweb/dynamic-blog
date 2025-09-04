@@ -3,6 +3,8 @@ import postDb from "../../../../models/post.js"
 
 export async function GET({ session, params, redirect, cookies }){
     const user = await session.get('user')
+    if(!user){return redirect('/login')}
+
     const post = await postDb.getPost(params)
 
     if(user.role !== 'Admin'){

@@ -1,13 +1,13 @@
-<!--src/pages/admin/page/index.astro-->
+<!--src/pages/admin/page/edit/[id].astro-->
 ---
 // @ts-nocheck
 const user = await Astro.session?.get('user')
 if(!user){return Astro.redirect('/login')}
 
-import Layout from "../../../components/admin/Layout.astro"
-import Page from "../../../components/admin/Page.svelte"
-import pageDb from "../../../models/page.js"
-import setup from "../../../settings.js"
+import Layout from "../../../../components/admin/Layout.astro"
+import Page from "../../../../components/admin/Page-edit.svelte"
+import pageDb from "../../../../models/page.js"
+import setup from "../../../../settings.js"
 
 let form = null
 
@@ -29,11 +29,11 @@ if(Astro.request.method === "POST"){
     if(validate){
         if(user.role === 'Admin'){
             const page = {title, content, thumb, date}
-            await pageDb.createPage(page)
-            form.info = 'ទំព័រ​ស្តាទិក​​មួយ​ត្រូវ​បាន​បង្កើត​ឡើង!'
+            await pageDb.updatePage(page, Astro.params)
+            form.info = 'ការកែប្រែ​សំរេច​បាន​ដោយ​ជោគជ័យ!'
             form.success = true
         }else{
-            form.info = 'អ្នក​គ្មាន​សិទ្ធិ​បង្កើត​ទំព័រ​ស្តាទិក​​ឡើយ!'
+            form.info = 'អ្នក​គ្មាន​សិទ្ធិ​កែប្រែ​​ទំព័រ​ស្តាទិក​​ឡើយ!'
             form.success = false
         }
     }else{
@@ -43,16 +43,14 @@ if(Astro.request.method === "POST"){
 }
 
 const settings = await setup()
-const items = await pageDb.getPages(settings.dashboard)
+const params = Astro.url.searchParams
+const navPage = params.get("p")
+const page = await pageDb.getPage(Astro.params)
+const items = await pageDb.paginatePages(parseInt(navPage), settings.dashboard)
 const count = await pageDb.count()
 const pageNumber = Math.ceil(count/settings.dashboard)
 
-const data = { user, count, items, info:"ទំព័រ​ស្តាទិក", type:"page", pageNumber, form }
-const formCookie = Astro.cookies.get('form')
-if(formCookie){
-    data.form = JSON.parse(formCookie.value)
-    Astro.cookies.delete("form", { path: '/' })
-}
+const data = { user, count, page, items, info:"ទំព័រ​ស្តាទិក", type:"page", pageNumber, form, navPage }
 ---
  
 <Layout title="ទំព័រ​ស្តាទិក" data={data} >

@@ -3,6 +3,7 @@ import categoryDb from "../../../../models/category.js"
 
 export async function GET({ session, params, redirect, cookies }){
     const user = await session.get('user')
+    if(!user){return redirect('/login')}
 
     if(user.role === 'Admin'){
         await categoryDb.deleteCategory(params)
